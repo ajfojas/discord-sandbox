@@ -20,6 +20,8 @@ module.exports = {
         skipBlankLines: true
       }],
     'comma-dangle': ['error', 'never'],
-    'eol-last': ['error', 'always']
+    'eol-last': ['error', 'always'],
+    'comma-spacing': ['error', { before: false, after: true }],
+    'no-console': 'off'
   }
 };
