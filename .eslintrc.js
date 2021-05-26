@@ -22,6 +22,8 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     'eol-last': ['error', 'always'],
     'comma-spacing': ['error', { before: false, after: true }],
-    'no-console': 'off'
+    'no-console': 'off',
+    'spaced-comment': ['error', 'always', { exceptions: ['/'] }],
+    'max-len': ['error', { code: 200 }]
   }
 };
