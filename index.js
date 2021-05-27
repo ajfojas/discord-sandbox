@@ -3,18 +3,66 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 
-client.on('ready', () => {
-  console.log(`${client.user.tag} is on :)`);
+client.on('ready', async () => {
+  try {
+    await client.user.setPresence({
+      activity: {
+        type: 'PLAYING',
+        name: 'JS. Type \'>help\' for docs'
+      }
+    });
+  } catch (error) {
+    console.log('CLIENT ON READY ERROR 1 :>> ', error);
+  }
+  console.log(`${client.user.username} is on :)`);
 });
 
 client.on('message', async (message) => {
   // Commands
-  if (message.content.startsWith('>')) {
+  const PREFIX = '>';
+  if (message.content.startsWith(PREFIX)) {
     const content = message.content.toUpperCase();
     const [command, ...args] = content.substring(1).split(' ');
     const TWO_WEEKS = 1209600000;
     
     switch (command) {
+      case 'HELP': {
+        const docs = [
+          'help',
+          [
+            'Display the list of AnthonyBot\'s commands.'
+          ],
+          '2weeks `\'game\'`',
+          [
+            'Set yourself a reminder to play a game in 2 weeks.'
+          ],
+          'listen',
+          [
+            'Add AnthonyBot to the voice channel you\'re in.'
+          ]
+        ];
+
+        const formattedDocs = docs
+          .map((doc) => {
+            if (typeof doc === 'string') {
+              return `**>${doc}**`;
+            }
+            if (Array.isArray(doc)) {
+              return doc.map((paragraph) => `\t\t${paragraph}`);
+            }
+            return doc;
+          })
+          .flat()
+          .join('\n');
+
+        try {
+          await message.channel.send(formattedDocs);
+        } catch (error) {
+          console.log('HELP ERROR 1 :>> ', error);
+        }
+        break;
+      }
+
       case '2WEEKS':
         if (args.length === 0) {
           try {
@@ -39,7 +87,7 @@ client.on('message', async (message) => {
         const sourceVoiceChannel = message.member.voice.channel;
         if (!sourceVoiceChannel) {
           try {
-            await message.reply('you fool. Do not even attempt to summon me unless you are in a voice channel >:(');
+            await message.reply('you fool. Do not even think to summon me unless you are in a voice channel >:(');
           } catch (error) {
             console.log('LISTEN ERROR 1 :>> ', error);
           }
