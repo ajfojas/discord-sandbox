@@ -30,15 +30,17 @@ client.on('message', async (message) => {
         const docs = [
           'help',
           [
-            'Display the list of AnthonyBot\'s commands.'
+            `Display the list of ${client.user.username}'s commands.`
           ],
-          '2weeks `\'game\'`',
+          '2weeks `<game>`',
           [
-            'Set yourself a reminder to play a game in 2 weeks.'
+            '*Requires `<game>` argument.*',
+            `Have ${client.user.username} set a reminder for you to play a specified game with the peeps in 2 weeks.`
           ],
           'listen',
           [
-            'Add AnthonyBot to the voice channel you\'re in.'
+            '*Requires presence in a voice channel.*',
+            `Allow ${client.user.username} to join your voice channel and make sure everyone is playing nice :)`
           ]
         ];
 
@@ -63,10 +65,11 @@ client.on('message', async (message) => {
         break;
       }
 
-      case '2WEEKS':
-        if (args.length === 0) {
+      case '2WEEKS': {
+        const game = args.join(' ');
+        if (game.length === 0) {
           try {
-            await message.reply('you forgot to mention the game, dummy :P');
+            await message.channel.send(`\`ERROR: Missing <game> argument.\`\n${message.author}, what game would you like me to set a 2 week reminder for?`);
           } catch (error) {
             console.log('2WEEKS ERROR 1 :>> ', error);
           }
@@ -74,20 +77,21 @@ client.on('message', async (message) => {
         }
 
         try {
-          await message.channel.send(`${message.author} promises to play **${args.join(' ')}** in 2 weeks if y'all are still playing it!`);
+          await message.reply(`you got it! I'll remind you to play **${game}** with the peeps in 2 weeks :)`);
           setTimeout(async () => {
-            await message.channel.send(`2 weeks have passed!! ${message.author}, you promised to play **${args.join(' ')}** if people are still playing it!`);
+            await message.reply(`yo here's your 2 week reminder to play **${game}** with the peeps. Have fun :)`);
           }, TWO_WEEKS);
         } catch (error) {
           console.log('2WEEKS ERROR 2 :>> ', error);
         }
         break;
+      }
 
       case 'LISTEN': {
         const sourceVoiceChannel = message.member.voice.channel;
         if (!sourceVoiceChannel) {
           try {
-            await message.reply('you fool. Do not even think to summon me unless you are in a voice channel >:(');
+            await message.channel.send(`\`ERROR: No presence in a voice channel detected.\`\n${message.author}, please join a voice channel first.`);
           } catch (error) {
             console.log('LISTEN ERROR 1 :>> ', error);
           }
@@ -104,10 +108,10 @@ client.on('message', async (message) => {
         }
         break;
       }
-      
+
       default:
         try {
-          await message.channel.send(`Sorry, \`${message.content.split(' ')[0]}\` is currently not a command :(`);
+          await message.reply(`\`${message.content.split(' ')[0]}\` is currently not a command :(`);
         } catch (error) {
           console.log('DEFAULT ERROR 1 :>> ', error);
         }
