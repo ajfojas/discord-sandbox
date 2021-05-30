@@ -23,7 +23,7 @@ module.exports = {
     'eol-last': ['error', 'always'],
     'comma-spacing': ['error', { before: false, after: true }],
     'no-console': 'off',
-    'spaced-comment': ['error', 'always', { exceptions: ['/'] }],
-    'max-len': ['error', { code: 200 }]
+    'spaced-comment': 'off',
+    'max-len': 'off'
   }
 };
