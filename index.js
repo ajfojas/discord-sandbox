@@ -39,8 +39,13 @@ client.on('message', async (message) => {
           ],
           'listen',
           [
-            '*Requires presence in a voice channel.*',
+            '*Requires user voice channel presence.*',
             `Allow ${client.user.username} to join your voice channel and make sure everyone is playing nice :)`
+          ],
+          'leave',
+          [
+            '*Requires bot voice channel presence.*',
+            `Disconnect ${client.user.username} from its current voice channel.`
           ]
         ];
 
@@ -91,7 +96,7 @@ client.on('message', async (message) => {
         const sourceVoiceChannel = message.member.voice.channel;
         if (!sourceVoiceChannel) {
           try {
-            await message.channel.send(`\`ERROR: No presence in a voice channel detected.\`\n${message.author}, please join a voice channel first.`);
+            await message.channel.send(`\`ERROR: Missing user voice channel presence.\`\n${message.author}, please join a voice channel first.`);
           } catch (error) {
             console.log('LISTEN ERROR 1 :>> ', error);
           }
@@ -106,6 +111,21 @@ client.on('message', async (message) => {
             console.log('LISTEN ERROR 2 :>> ', error);
           }
         }
+        break;
+      }
+
+      case 'LEAVE': {
+        const botConnections = client.voice.connections;
+        const botConnected = botConnections.size >= 1;
+        if (!botConnected) {
+          try {
+            await message.channel.send(`\`ERROR: Missing bot voice channel presence.\`\n${client.user.username} is not connected to a voice channel.`);
+          } catch (error) {
+            console.log('LEAVE ERROR 1 :>> ', error);
+          }
+        }
+
+        botConnections.forEach((connection) => connection.disconnect());
         break;
       }
 
