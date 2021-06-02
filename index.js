@@ -145,8 +145,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
   const botConnections = client.voice.connections;
   const botConnected = botConnections.size === 1;
   const userAlone = _.get(oldState, 'channel.members.size') === 1;
-  console.log('botConnected :>> ', botConnected);
-  console.log('userAlone :>> ', userAlone);
   if (botConnected === userAlone) {
     botConnections.forEach((connection) => connection.disconnect());
   }
