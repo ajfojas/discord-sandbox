@@ -1,5 +1,6 @@
 require('dotenv').config();
 const Discord = require('discord.js');
+const _ = require('lodash');
 
 const client = new Discord.Client();
 
@@ -18,7 +19,7 @@ client.on('ready', async () => {
 });
 
 client.on('message', async (message) => {
-  // Commands
+  // Text Commands
   const PREFIX = '>';
   if (message.content.startsWith(PREFIX)) {
     const content = message.content.toUpperCase();
@@ -116,7 +117,7 @@ client.on('message', async (message) => {
 
       case 'LEAVE': {
         const botConnections = client.voice.connections;
-        const botConnected = botConnections.size >= 1;
+        const botConnected = botConnections.size === 1;
         if (!botConnected) {
           try {
             await message.channel.send(`\`ERROR: Missing bot voice channel presence.\`\n${client.user.username} is not connected to a voice channel.`);
@@ -136,6 +137,18 @@ client.on('message', async (message) => {
           console.log('DEFAULT ERROR 1 :>> ', error);
         }
     }
+  }
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+  // Disconnect bot from voice channel if last user
+  const botConnections = client.voice.connections;
+  const botConnected = botConnections.size === 1;
+  const userAlone = _.get(oldState, 'channel.members.size') === 1;
+  console.log('botConnected :>> ', botConnected);
+  console.log('userAlone :>> ', userAlone);
+  if (botConnected === userAlone) {
+    botConnections.forEach((connection) => connection.disconnect());
   }
 });
 
