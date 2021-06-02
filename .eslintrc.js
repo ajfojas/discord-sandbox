@@ -24,6 +24,7 @@ module.exports = {
     'comma-spacing': ['error', { before: false, after: true }],
     'no-console': 'off',
     'spaced-comment': 'off',
-    'max-len': 'off'
+    'max-len': 'off',
+    'no-unused-vars': ['error', { args: 'none' }]
   }
 };
